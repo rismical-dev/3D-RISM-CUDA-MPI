@@ -24,16 +24,25 @@ void RISM3D :: output() {
     double pmv = cal_pmv();
     double pressure = cal_pressure();
     double * xmu = new double[sv -> natv * 2];
-    cal_exchem(xmu);
-    double * xmu2;
-    if (myrank == 0) xmu2 = new double[sv -> natv * 2];
-    MPI_Reduce(xmu, xmu2, sv -> natv * 2, MPI_DOUBLE, MPI_SUM, 0,
+    double * xmu2 = new double[sv -> natv];    
+
+    cal_exchem(xmu, xmu2);
+
+    double * xmu0;
+    double * xmu20;
+    if (myrank == 0) {
+      xmu0 = new double[sv -> natv * 2];
+      xmu20 = new double[sv -> natv];      
+    }
+    MPI_Reduce(xmu, xmu0, sv -> natv * 2, MPI_DOUBLE, MPI_SUM, 0,
+    	       MPI_COMM_WORLD);
+    MPI_Reduce(xmu2, xmu20, sv -> natv, MPI_DOUBLE, MPI_SUM, 0,
     	       MPI_COMM_WORLD);
     if (myrank == 0) {
-      output_xmu(xmu2, pmv, pressure);
-      delete[] xmu2;
+      output_xmu(xmu0, xmu20, pmv, pressure);
+      delete[] xmu0, xmu20;
     }
-    delete[] xmu;
+    delete[] xmu, xmu2;
   }
 
   if ((flag & 2) == 2) {

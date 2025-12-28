@@ -4,7 +4,8 @@
 #include "rism3d.h"
 #include "extension.h"
 
-void RISM3D :: output_xmu(double * & xmu, double pmv, double pressure) {
+void RISM3D :: output_xmu(double * & xmu, double * & xmu2,
+                          double pmv, double pressure) {
     
   ofstream out_file;
   out_file.open((fname + extxmu).c_str());
@@ -14,11 +15,6 @@ void RISM3D :: output_xmu(double * & xmu, double pmv, double pressure) {
   double xmua = 0.0;
   for (int iv = 0; iv < sv -> natv; ++iv) {
     xmua += xmu[iv];
-  }
-
-  double gf = 0.0;
-  for (int iv = 0; iv < sv -> natv; ++iv) {
-    gf += xmu[sv -> natv + iv];
   }
 
   double pcterm = - pressure * pmv * ibeta;
@@ -34,12 +30,34 @@ void RISM3D :: output_xmu(double * & xmu, double pmv, double pressure) {
   }
   out_file << endl;
 
-  out_file << "SFE_GF= " << fixed << setprecision(5)
-           << ibeta * gf << " !(J/mol)" << endl;
+  if (clos == 0) {
+    xmua = 0.0;
+    for (int iv = 0; iv < sv -> natv; ++iv) {
+      xmua += xmu2[iv];
+    }
+
+    out_file << "SFE_SC_HNC= " << fixed << setprecision(5)
+             << ibeta * xmua << " !(J/mol)" << endl;
+
+    for (int iv = 0; iv < sv -> natv; ++iv) {
+      out_file << "  SFEC_SC_HNC(" << iv << ")= " << fixed << setprecision(5)
+               << ibeta * xmu2[iv] << endl;
+    }
+    out_file << endl;
+  }
+
+  xmua = 0.0;
 
   for (int iv = 0; iv < sv -> natv; ++iv) {
-    out_file << "  SFEC_GF(" << iv << ")= " << ibeta * xmu[sv -> natv + iv]
-             << endl;
+    xmua += xmu[sv -> natv + iv];
+  }
+
+  out_file << "SFE_GF= " << fixed << setprecision(5)
+           << ibeta * xmua << " !(J/mol)" << endl;
+
+  for (int iv = 0; iv < sv -> natv; ++iv) {
+    out_file << "  SFEC_GF(" << iv << ")= " << fixed << setprecision(5)
+    	     << ibeta * xmu[sv -> natv + iv] << endl;
   }
   out_file << endl;
 
@@ -47,7 +65,7 @@ void RISM3D :: output_xmu(double * & xmu, double pmv, double pressure) {
            << pmv * 1000 << " !(L/mol)" << endl;
 
   out_file << "Pressure= " << fixed << setprecision(5)
-           << pressure * kcal2J << " !(J/m^3)" << endl;
+           << ibeta * pressure << " !(J/m^3)" << endl;
 
   out_file << "Correction_Term= " << fixed << setprecision(5)
              << pcterm << " !(J/mol)" << endl;

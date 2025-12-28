@@ -32,7 +32,7 @@ private:
   void cal_ad2 (double * &);
   void cal_Coulomb ();
   void cal_euv (double * &);
-  void cal_exchem (double * &);
+  void cal_exchem (double * &, double * &);
   void cal_grad (double * &);
   void cal_LJ ();
   double cal_pmv ();
@@ -48,7 +48,7 @@ private:
   void output_grad (double * &);
   void output_guv ();
   void output_huv ();
-  void output_xmu (double * &, double, double);
+  void output_xmu (double * &, double * &, double, double);
   void read_input (string, string, bool);
   void read_tuv ();
   void set_fname (string, string);
