@@ -2,7 +2,7 @@
 #include "rism3d.h"
 
 void RISM3D :: initialize(string control, string structure, bool centering, 
-                          int dn) {
+                          bool q0, int dn) {
 #ifdef TEST
   double t[4];
   t[0] = MPI_Wtime();
@@ -18,6 +18,7 @@ void RISM3D :: initialize(string control, string structure, bool centering,
   sched_setaffinity(0, sizeof(cpu), &cpu);
 */
 
+  zero = q0;
   set_mpi();
   set_device(dn);
   read_input(control, structure, centering);

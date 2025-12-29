@@ -3,6 +3,7 @@
 #include <string>
 
 const string extxmu = ".xmu";
+const string extxmu0 = ".xmu0";
 const string extguv = ".guv";
 const string exthuv = ".huv";
 const string extcuv = ".cuv";

@@ -20,9 +20,9 @@ bool isNaturalNumber(const std::string& str) {
 
 void RISM3D :: read_input (string control, string structure, bool centering) {
 
-    int num;
+  int num;
 
-    if (myrank == 0) {
+  if (myrank == 0) {
     ifstream in_file;
     in_file.open (control.c_str());
 
@@ -79,6 +79,10 @@ void RISM3D :: read_input (string control, string structure, bool centering) {
 
     if (centering) {
       ce -> shift = su -> centering();
+    }
+
+    if (zero) {
+      su -> zero();
     }
   }
 

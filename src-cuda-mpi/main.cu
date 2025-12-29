@@ -9,10 +9,11 @@ int main (int argc, char * argv[]) {
   string input;
   string structure;
   bool centering = true;  
+  bool q0 = false;
 
   system = new RISM3D;
 
-  while ((ch = getopt(argc, argv, "c:i:s:l:e:f")) != -1) {
+  while ((ch = getopt(argc, argv, "c:i:s:l:e:f:z")) != -1) {
     switch (ch){
     case 'c':
       cu = atoi(optarg);
@@ -31,6 +32,9 @@ int main (int argc, char * argv[]) {
       break;
     case 'f':
       centering = false;
+      break;
+    case 'z':
+      q0 = true;
       break;
     }
   }
@@ -56,7 +60,7 @@ int main (int argc, char * argv[]) {
   //  int provided;
   //  MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);
 
-  system -> initialize(input, structure, centering, dn);
+  system -> initialize(input, structure, centering, q0, dn);
   system -> iterate();
   system -> output();    
 

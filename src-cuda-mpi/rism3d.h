@@ -24,7 +24,7 @@ public:
     sv = new Solvent; ma = new AN2; fft = new FFT3D;}
   ~RISM3D () {delete ce, co, su, sv;} 
   void set_ad(double, int);
-  void initialize (string, string, bool, int);
+  void initialize (string, string, bool, bool, int);
   void iterate ();    
   void output ();
 private:
@@ -79,7 +79,8 @@ private:
   string fname;
   dim3 br, bk;
   dim3 gr, gk;
-
+  bool zero = false;
+  
   // Device
   double2 * dguv;
   double2 * dhuv;

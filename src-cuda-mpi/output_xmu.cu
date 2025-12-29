@@ -6,9 +6,15 @@
 
 void RISM3D :: output_xmu(double * & xmu, double * & xmu2,
                           double pmv, double pressure) {
-    
+
+  string fxmu;
+  if (!zero) {
+    fxmu = fname + extxmu;
+  } else {
+    fxmu = fname + extxmu0;
+  }
   ofstream out_file;
-  out_file.open((fname + extxmu).c_str());
+  out_file.open(fxmu.c_str());
 
   double ibeta = avogadoro * boltzmann * sv -> temper;
 

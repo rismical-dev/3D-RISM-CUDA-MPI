@@ -47,6 +47,12 @@ double * Solute :: centering() {
  return shift;
 }
 
+void Solute :: zero() {
+  for (int n = 0; n < num; ++n) {
+    q[n] = 0.0;
+  }
+}
+
 void Solute :: setup_mpi() {
   MPI_Bcast(q, num, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(sig, num, MPI_DOUBLE, 0, MPI_COMM_WORLD);
