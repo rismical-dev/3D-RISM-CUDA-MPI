@@ -1,0 +1,3 @@
+mpirun -np 4 3drism-cuda-mpi -i 3drism.dat -s mobley_3053621
+mpirun -np 4 3drism-cuda-mpi -z 3drism.dat -s mobley_3053621
+python3 ../tools/milc.py mobley_3053621 > mobley_3053621.out
