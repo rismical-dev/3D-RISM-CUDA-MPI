@@ -38,3 +38,5 @@ Cell: 256^3 Angstrom^3 (512^3 grids)
 2. Y. Maruyama and F. Hirata, "Modified Anderson method for accelerating 3D-RISM calculations using graphics processing unit," J. Chem. Theory Comput., (2012) 8, 3015-3021 (DOI: 10.1021/ct300355r)
 
 3. Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, and F. Hirata, "Massively parallel implementation of 3D-RISM calculation with volumetric 3D-FFT", J. Comp. Chem. (2014) 35, 1347-1355 (DOI: 10.1002/jcc.23619)
+
+4. Y. Maruyama, and N. Yoshida, "High-Precision Solvation Free Energy Calculation via Multi-Input Linear Correction in 3D-RISM Theory",  J. Chem. Theory Comput., (2026) 22, 3596–361 (DOI: 10.1021/acs.jctc.5c02013)
