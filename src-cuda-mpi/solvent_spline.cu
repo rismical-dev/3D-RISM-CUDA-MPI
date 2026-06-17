@@ -54,20 +54,6 @@ void Solvent :: spline (vector <double> & ga, int * & indga,
     }
   }
 
-  for (int iv2 = 0; iv2 < natv; ++iv2) {
-    for (int iv1 = 0; iv1 < natv; ++iv1) {
-      double wvv;
-      if (iv1 == iv2) {
-	wvv = 1.0;
-      } else {
-	wvv = 0.0;
-      }
-      for (int i = 0; i < nga; ++i) {
-	xvva2[iv2][iv1][i] = wvv + (xvva2[iv2][iv1][i] - wvv); 
-      }
-    }
-  }
-
   alloc3D(xvva, natv, natv, ngrid);
   for (int iv2 = 0; iv2 < natv; ++iv2) {
     for (int iv1 = 0; iv1 < natv; ++iv1) {
