@@ -13,6 +13,7 @@ double RISM3D :: cal_pmv () {
     double s = thrust::reduce(ds_ptr, ds_ptr + gr.x * gr.y);
     cuv += s * sv -> rhov[iv];
   }
+
   double cuva;
   MPI_Reduce(&cuv, &cuva, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
   cuv = cuva * ce -> dv;

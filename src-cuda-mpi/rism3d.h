@@ -39,6 +39,7 @@ private:
   void cal_potential ();
   double cal_pressure ();
   double cal_rms ();
+  void cal_se (double * &);  
   void calculate (double &);
   void initialize_g ();
   void initialize_tuv ();
@@ -48,7 +49,7 @@ private:
   void output_grad (double * &);
   void output_guv ();
   void output_huv ();
-  void output_xmu (double * &, double * &, double, double);
+  void output_xmu (double * &, double * &, double * &, double, double);
   void read_input (string, string, bool);
   void read_tuv ();
   void set_fname (string, string);

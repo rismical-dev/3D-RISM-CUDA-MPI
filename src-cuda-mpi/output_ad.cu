@@ -1,9 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include "rism3d.h"
 #include "extension.h"
 
-void RISM3D :: output_ad(double * & du) {
+void RISM3D :: output_ad(double * & ad) {
 
   std::stringstream ss;
   ss << fname << "-" << adswitch << "-" << lambda;
@@ -13,9 +14,10 @@ void RISM3D :: output_ad(double * & du) {
   ofstream out_file;
   out_file.open (ss.str().c_str());
 
-  double dv = ce -> dv / kcal2J;
+  double dv = ce -> dv;
   for (int iu = 0; iu < su -> num; ++iu) {
-    out_file << du[iu] * dv << endl;
+    out_file << scientific 
+             << setw(16) << setprecision(8) << ad[iu] * dv << endl;
   }
 
   cout << "done." << endl;

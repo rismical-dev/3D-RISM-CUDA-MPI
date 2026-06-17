@@ -27,6 +27,7 @@ OBJS   	= main.o\
 	  cal_potential.o\
 	  cal_pressure.o\
           cal_rms.o\
+          cal_se.o\
 	  calculate.o\
 	  calculate_cuda.o\
 	  calloc2D.o\

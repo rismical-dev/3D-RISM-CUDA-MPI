@@ -16,9 +16,9 @@ void RISM3D :: cal_potential() {
   t[2] = MPI_Wtime();
 #endif
 
-  for (int iv = 0; iv < sv -> natv; ++iv) {
-    set_du <<< gr, br >>> (du + (iv * ce -> mgrid), de, sv -> qv[iv]);
-  }
+//  for (int iv = 0; iv < sv -> natv; ++iv) {
+//    set_du <<< gr, br >>> (du + (iv * ce -> mgrid), de, sv -> qv[iv]);
+//  }
 #ifdef TEST
   t[3] = MPI_Wtime();
 #endif

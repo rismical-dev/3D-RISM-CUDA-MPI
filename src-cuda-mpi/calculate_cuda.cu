@@ -1,7 +1,8 @@
-__global__ void kh(double * dtr, double * dt, double * du) {
+__global__ void kh(double * dtr, double * dt, double * du, double * de,
+	           double q) {
   unsigned int ip = threadIdx.x + blockIdx.x * blockDim.x 
     + blockIdx.y * blockDim.x * gridDim.x;
-  double earg = - du[ip] + dt[ip];
+  double earg = - du[ip] - de[ip] * q + dt[ip];
   if (earg >= 0.0) {
     dtr[ip] = 1.0 + earg;
   } else {
@@ -9,10 +10,11 @@ __global__ void kh(double * dtr, double * dt, double * du) {
   }
 }
 
-__global__ void hnc(double * dtr, double * dt, double * du) {
+__global__ void hnc(double * dtr, double * dt, double * du, double * de,
+                    double q) {
   unsigned int ip = threadIdx.x + blockIdx.x * blockDim.x 
     + blockIdx.y * blockDim.x * gridDim.x;
-  dtr[ip] = exp(- du[ip] + dt[ip]);
+  dtr[ip] = exp(- du[ip] - de[ip] * q + dt[ip]);
 }
 
 __global__ void trm1mt(double2 * dguv, double * dtr, double * dt,

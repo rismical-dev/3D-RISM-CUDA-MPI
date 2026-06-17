@@ -2,8 +2,10 @@
 #include "rism3d.h"
 
 void RISM3D :: calculate (double & ft) {
-  __global__ void kh(double * dtr, double * dt, double * du);
-  __global__ void hnc(double * dtr, double * dt, double * du);
+  __global__ void kh(double * dtr, double * dt, double * du, double * de,
+                     double q);
+  __global__ void hnc(double * dtr, double * dt, double * du, double * de,
+                      double q);
   __global__ void trm1mt(double2 * dguv, double * dtr, double * dt,
                          double * dfr, double qv);
   __global__ void mqvfk(double2 * dguv, double2 * dfk, double qv);
@@ -14,11 +16,13 @@ void RISM3D :: calculate (double & ft) {
 
   if (clos == 0) {
     for (int iv = 0; iv < sv -> natv; ++iv) {
-      kh <<< gr, br >>> (dtr + (iv * ng), dt + (iv * ng), du + (iv * ng));
+      kh <<< gr, br >>> (dtr + (iv * ng), dt + (iv * ng), du + (iv * ng),
+                         de, sv -> qv[iv]);
     }
   } else if (clos == 1) {
     for (int iv = 0; iv < sv -> natv; ++iv) {
-      hnc <<< gr, br >>> (dtr + (iv * ng), dt + (iv * ng), du + (iv * ng));
+      hnc <<< gr, br >>> (dtr + (iv * ng), dt + (iv * ng), du + (iv * ng),
+                          de, sv -> qv[iv]);
     }
   } 
 
