@@ -54,10 +54,10 @@ void RISM3D :: output() {
   if ((flag & 2) == 2) {
     double * du;
     double * du2;
-    du = new double[su -> num * 3];
+    du = new double[su -> num * 6];
     cal_grad(du);
-    if (myrank == 0) du2 = new double[su -> num * 3];
-    MPI_Reduce(du, du2, su -> num * 3, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    if (myrank == 0) du2 = new double[su -> num * 6];
+    MPI_Reduce(du, du2, su -> num * 6, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     if (myrank == 0) {
       output_grad(du2);
       delete[] du2;
