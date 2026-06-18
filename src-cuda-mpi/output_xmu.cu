@@ -4,7 +4,7 @@
 #include "rism3d.h"
 #include "extension.h"
 
-void RISM3D :: output_xmu(double * & xmu, double * & xmu2, double * & se,
+void RISM3D :: output_xmu(double * & xmu, double * & xmu2, double * & euv,
                           double pmv, double pressure) {
 
   string fxmu;
@@ -66,26 +66,28 @@ void RISM3D :: output_xmu(double * & xmu, double * & xmu2, double * & se,
   }
   out_file << endl;
 
+  double dv = ce -> dv;
   xmua = 0.0;
-  for (int iv = 0; iv < sv -> natv * 2; ++iv) {
-    xmua += se[iv];
+  for (int i = 0; i < su -> num * sv -> natv * 2; ++i) {
+    xmua += euv[i];
   }
   out_file << "SE= " << fixed << setprecision(5) 
-	   << ibeta * xmua << " !(J/mol)" << endl;
+	   << xmua * dv << " !(J/mol)" << endl;
 
   xmua = 0.0;
-  for (int iv = 0; iv < sv -> natv; ++iv) {
-    xmua += se[iv];
+  for (int i = 0; i < su -> num * sv -> natv; ++i) {
+
+    xmua += euv[i];
   }
   out_file << "  SE_LJ= " << fixed << setprecision(5)
-           << ibeta * xmua << endl;
+           << xmua * dv << endl;
 
   xmua = 0.0;
-  for (int iv = sv -> natv; iv < sv -> natv * 2; ++iv) {
-    xmua += se[iv];
+  for (int i = su -> num * sv -> natv; i < su -> num * sv -> natv * 2; ++i) {
+    xmua += euv[i];
   }
   out_file << "  SE_ES= " << fixed << setprecision(5)
-           << ibeta * xmua << endl;
+           << xmua * dv << endl;
   out_file << endl;
 
   out_file << "PMV= " << fixed << setprecision(5)

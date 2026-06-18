@@ -16,40 +16,44 @@ void RISM3D :: output() {
     if (outlist.find("h") != string::npos) flag += 16;
     if (outlist.find("a") != string::npos) flag += 32;
     if (outlist.find("e") != string::npos) flag += 64;
-    if (outlist.find("s") != string::npos) flag += 128;    
   }
 
   MPI_Bcast(&flag, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+  double * euv0;
+  if (((flag & 1) == 1) || ((flag & 64) == 64)) {
+    double * euv;
+    euv = new double[su -> num * sv -> natv * 2];
+    cal_euv(euv);
+    if (myrank == 0) euv0 = new double[su -> num * sv -> natv * 2];
+    MPI_Reduce(euv, euv0, su -> num * sv -> natv * 2, MPI_DOUBLE, MPI_SUM, 0, 
+               MPI_COMM_WORLD);
+    delete[] euv;
+  }
 
   if ((flag & 1) == 1) {
     double pmv = cal_pmv();
     double pressure = cal_pressure();
     double * xmu = new double[sv -> natv * 2];
     double * xmu2 = new double[sv -> natv];
-    double * se = new double[sv -> natv * 2];
 
     cal_exchem(xmu, xmu2);
-    cal_se(se);
 
     double * xmu0;
     double * xmu20;
-    double * se0;
     if (myrank == 0) {
       xmu0 = new double[sv -> natv * 2];
       xmu20 = new double[sv -> natv];
-      se0 = new double[sv -> natv * 2];
     }
     MPI_Reduce(xmu, xmu0, sv -> natv * 2, MPI_DOUBLE, MPI_SUM, 0,
     	       MPI_COMM_WORLD);
     MPI_Reduce(xmu2, xmu20, sv -> natv, MPI_DOUBLE, MPI_SUM, 0,
     	       MPI_COMM_WORLD);
-    MPI_Reduce(se, se0, sv -> natv * 2, MPI_DOUBLE, MPI_SUM, 0,
-    	       MPI_COMM_WORLD);
     if (myrank == 0) {
-      output_xmu(xmu0, xmu20, se0, pmv, pressure);
-      delete[] xmu0, xmu20, se0;
+      output_xmu(xmu0, xmu20, euv0, pmv, pressure);
+      delete[] xmu0, xmu20;
     }
-    delete[] xmu, xmu2, se;
+    delete[] xmu, xmu2;
   }
 
   if ((flag & 2) == 2) {
@@ -97,32 +101,10 @@ void RISM3D :: output() {
   }
 
   if ((flag & 64) == 64) {
-    double * euv;
-    double * euv2;
-    euv = new double[su -> num * sv -> natv];
-    cal_euv(euv);
-    if (myrank == 0) euv2 = new double[su -> num * sv -> natv];
-    MPI_Reduce(euv, euv2, su -> num * sv -> natv, MPI_DOUBLE, MPI_SUM, 0, 
-               MPI_COMM_WORLD);
     if (myrank == 0) {
-      output_euv(euv2);
-      delete[] euv2;
+      output_euv(euv0);
     }
-    delete[] euv;
   }
 
-  if ((flag & 128) == 128) {
-    double * ssie;
-    double * ssie2;
-    ssie = new double[su -> num * 2];
-    cal_ssie(ssie);
-    if (myrank == 0) ssie2 = new double[su -> num * 2];
-    MPI_Reduce(ssie, ssie2, su -> num * 2, MPI_DOUBLE, MPI_SUM, 0, 
-               MPI_COMM_WORLD);
-    if (myrank == 0) {
-      output_ssie(ssie2);
-      delete[] ssie2;
-    }
-    delete[] ssie;
-  }
+  delete[] euv0;
 }

@@ -13,15 +13,21 @@ void RISM3D :: cal_euv (double * & e) {
 
   cudaMemcpyToSymbol(dv, ce -> dr, sizeof(double3));
   cudaMemcpyToSymbol(grid, ce -> grid, sizeof(int3));
+  double * ds2;
+  cudaMalloc(&ds2, gr.x * gr.y * 2 * sizeof(double));
 
   for (size_t iv = 0; iv < sv -> natv; ++iv) {
     for (size_t iu = 0; iu < su -> num; ++iu) {
-      euv <<< gr, br, br.x * sizeof(double) >>>
-        (ds, dguv + iv * ng, dsig, deps, su -> dr, su -> dq, sv -> qv[iv], 
+      euv <<< gr, br, br.x * 2 * sizeof(double) >>>
+        (ds2, dguv + iv * ng, dsig, deps, su -> dr, su -> dq, sv -> qv[iv], 
          su -> num, iv, iu, ce -> ystart, ce -> zstart);
-	thrust::device_ptr<double> ds_ptr(ds);
-        double s = thrust::reduce(ds_ptr, ds_ptr + (gr.x * gr.y));
-        e[iu * sv -> natv + iv] = s * sv -> rhov[iv];
+      thrust::device_ptr<double> ds2_ptr(ds2);
+      for (int i = 0; i < 2; ++i) {
+        double s = thrust::reduce(ds2_ptr + (gr.x * gr.y) * i,
+                                  ds2_ptr + (gr.x * gr.y) * (i + 1));
+        e[(sv -> natv * su -> num) * i + su -> num * iv + iu] =
+	  s * sv -> rhov[iv];
+      }
     }
   }
 }
@@ -44,23 +50,28 @@ __global__ void euv(double * ds, double2 * dguv, double * dsig,
 
   if (r1 < dsig[iuv] * 0.5) {
     sdata[threadIdx.x] = 0.0;
+    sdata[threadIdx.x + blockDim.x] = 0.0;
   } else {
     double rs2i = dsig[iuv] * dsig[iuv] / r2;
     double rs6i = rs2i * rs2i * rs2i;
     double ulj = deps[iuv] * 4.0 * rs6i * ( rs6i - 1.0) * dguv[ip].x;
     double uco = qu[iu] * qv / r1 * cc * dguv[ip].x;
-    sdata[threadIdx.x] = ulj + uco;
+    sdata[threadIdx.x] = ulj;
+    sdata[threadIdx.x + blockDim.x] = uco;
   }
   __syncthreads();
 
   for (unsigned int s = blockDim.x / 2; s > 0; s >>= 1) {
     if (threadIdx.x < s) {
       sdata[threadIdx.x] += sdata[threadIdx.x + s];
+      sdata[threadIdx.x + blockDim.x] += sdata[threadIdx.x + blockDim.x + s];
     }
     __syncthreads();
   }
   if (threadIdx.x == 0) {
     ds[blockIdx.x + blockIdx.y * gridDim.x] = sdata[0];
+    ds[blockIdx.x + blockIdx.y * gridDim.x + gridDim.x * gridDim.y] =
+      sdata[blockDim.x];
   }
 }
 

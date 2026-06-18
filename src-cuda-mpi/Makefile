@@ -27,8 +27,6 @@ OBJS   	= main.o\
 	  cal_potential.o\
 	  cal_pressure.o\
           cal_rms.o\
-          cal_se.o\
-	  cal_ssie.o\
 	  calculate.o\
 	  calculate_cuda.o\
 	  calloc2D.o\
@@ -50,7 +48,6 @@ OBJS   	= main.o\
 	  output_grad.o\
 	  output_guv.o\
 	  output_huv.o\
-	  output_ssie.o\
 	  output_xmu.o\
 	  read_input.o\
 	  read_tuv.o\
