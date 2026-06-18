@@ -15,7 +15,8 @@ void RISM3D :: output() {
     if (outlist.find("g") != string::npos) flag += 8;
     if (outlist.find("h") != string::npos) flag += 16;
     if (outlist.find("a") != string::npos) flag += 32;
-    if (outlist.find("b") != string::npos) flag += 64;
+    if (outlist.find("e") != string::npos) flag += 64;
+    if (outlist.find("s") != string::npos) flag += 128;    
   }
 
   MPI_Bcast(&flag, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -108,5 +109,20 @@ void RISM3D :: output() {
       delete[] euv2;
     }
     delete[] euv;
+  }
+
+  if ((flag & 128) == 128) {
+    double * ssie;
+    double * ssie2;
+    ssie = new double[su -> num * 2];
+    cal_ssie(ssie);
+    if (myrank == 0) ssie2 = new double[su -> num * 2];
+    MPI_Reduce(ssie, ssie2, su -> num * 2, MPI_DOUBLE, MPI_SUM, 0, 
+               MPI_COMM_WORLD);
+    if (myrank == 0) {
+      output_ssie(ssie2);
+      delete[] ssie2;
+    }
+    delete[] ssie;
   }
 }
