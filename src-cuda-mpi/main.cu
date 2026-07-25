@@ -13,7 +13,7 @@ int main (int argc, char * argv[]) {
 
   system = new RISM3D;
 
-  while ((ch = getopt(argc, argv, "c:i:s:l:e:f:z")) != -1) {
+  while ((ch = getopt(argc, argv, "c:i:s:l:e:fz")) != -1) {
     switch (ch){
     case 'c':
       cu = atoi(optarg);
