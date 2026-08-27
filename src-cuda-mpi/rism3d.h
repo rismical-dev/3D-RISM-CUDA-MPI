@@ -73,7 +73,7 @@ private:
   int procs, yprocs, zprocs;
   int myrank, yrank, zrank;
   int devid;
-  int adswitch;
+  int adswitch = 0;
   string outlist;
   string fsolvent;
   string fname;

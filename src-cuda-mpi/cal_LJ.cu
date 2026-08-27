@@ -23,12 +23,8 @@ void RISM3D :: cal_LJ() {
   cudaMallocHost(&siguv, su -> num * sv -> natv * sizeof(double));
   cudaMallocHost(&epsuv, su -> num * sv -> natv * sizeof(double));
 
-  double lambda1;
-  if (adswitch == 1) {
-    lambda1 = lambda;
-  } else {
-    lambda1 = 1.0;
-  }
+  double lambda1 = 1.0;
+  if (adswitch == 1) lambda1 = lambda;
 
   for (int iv = 0; iv < sv -> natv; ++iv) {
 #pragma omp parallel for
